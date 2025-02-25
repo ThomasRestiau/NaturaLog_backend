@@ -2,9 +2,6 @@ package be.restiau.interactivespeciesatlas_v3.dl.entities;
 
 import be.restiau.interactivespeciesatlas_v3.dl.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
