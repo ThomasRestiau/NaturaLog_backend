@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: InteractiveSpeciesAtlas_v3
+  datasource:
+    url: jdbc:postgresql://localhost:5432/interactive_species_atlas_api_db
+    username: postgres
+    password: Test1234=
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+server:
+  port: 8080
+
