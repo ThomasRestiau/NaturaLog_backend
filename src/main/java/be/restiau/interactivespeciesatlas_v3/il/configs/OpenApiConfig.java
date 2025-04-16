@@ -18,8 +18,8 @@ public class OpenApiConfig {
         final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
                 .info(new Info()
-                                .title("Social Network API")
-                                .description("Documentation : Social Network API")
+                                .title("Interactive Species Atlas API")
+                                .description("Documentation : Interactive Species Atlas API")
                                 .version("1.0.0")
                                 .contact(new Contact()
                                         .name(": Thomas Restiau")

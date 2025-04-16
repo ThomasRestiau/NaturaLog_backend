@@ -6,13 +6,20 @@ import lombok.*;
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true) @ToString
 @Getter @Setter
+@Cacheable
 @Entity
 public class Species extends BaseEntity<Long>{
 
-    @Column(length = 50, unique = true, nullable = false)
-    private String speciesKey;
+    @Column(unique = true, nullable = false)
+    private String gbifId;
 
-    @Column(nullable = false, length = 50)
+    @Column(unique = true, nullable = false)
+    private String scientificName;
+
+    @Column(nullable = false)
     private String vernacularName;
+
+    @Column(nullable = false)
+    private String canonicalName;
 
 }

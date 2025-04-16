@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@ToString
-@Getter
+@EqualsAndHashCode(callSuper = false) @ToString
+@Getter @Setter
 @Entity
 @Table(name = "user_",
         uniqueConstraints = {
@@ -28,36 +27,28 @@ import java.util.Set;
 )
 public class User extends BaseEntity<Long> implements UserDetails {
 
-    @Setter
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
-    @Setter
     @Column(nullable = false)
     private String password;
 
-    @Setter
     @Column(nullable = false, length = 123, name = "first_name")
     private String firstName;
 
-    @Setter
     @Column(nullable = false, length = 80, name = "last_name")
     private String lastName;
 
-    @Setter
     @Column(unique = true, nullable = false, length = 50)
     private String email;
 
-    @Setter
     @Column(nullable = false, name ="birth_date")
-    private LocalDate birth_date;
+    private LocalDate birthDate;
 
-    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     private UserRole role;
 
-    @Setter
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "user_species",
@@ -77,7 +68,7 @@ public class User extends BaseEntity<Long> implements UserDetails {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.birth_date = birthDate;
+        this.birthDate = birthDate;
     }
 
     public User(String username, String password, String firstName, String lastName, String email, LocalDate birthDate, UserRole role) {

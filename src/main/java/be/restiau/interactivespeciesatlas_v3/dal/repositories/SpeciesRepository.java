@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface SpeciesRepository extends JpaRepository<Species, Long> {
 
-    Optional<Species> findBySpeciesKey(String speciesKey);
-    boolean existsBySpeciesKey(String speciesKey);
+    Optional<Species> findByGbifId(String gbifId);
+    boolean existsByGbifId(String gbifId);
 
 }

@@ -1,11 +1,13 @@
 package be.restiau.interactivespeciesatlas_v3.bll.services.security;
 
-import be.restiau.interactivespeciesatlas_v3.dl.entities.User;
+import be.restiau.interactivespeciesatlas_v3.api.models.security.dtos.UserTokenDTO;
+import be.restiau.interactivespeciesatlas_v3.api.models.security.forms.RegisterForm;
+import be.restiau.interactivespeciesatlas_v3.api.models.user.dto.UserDTO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface AuthService extends UserDetailsService {
 
-    void register(User user);
-    User login(String username, String password);
+    UserDTO register(RegisterForm registerForm);
+    UserTokenDTO login(String username, String password);
 
 }

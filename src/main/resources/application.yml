@@ -13,6 +13,18 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  cache:
+    cache-names:
+      - vernacularName
+      - species
+      - description
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=6h
+
 server:
   port: 8080
+
+openai:
+  api:
+    key: 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
 

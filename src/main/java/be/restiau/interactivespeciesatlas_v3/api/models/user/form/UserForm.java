@@ -1,4 +1,4 @@
-package be.restiau.interactivespeciesatlas_v3.api.models.security.forms;
+package be.restiau.interactivespeciesatlas_v3.api.models.user.form;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,8 +7,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
-public record RegisterForm(
-
+public record UserForm(
         @NotBlank(message = "Username is required")
         @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
         String username,

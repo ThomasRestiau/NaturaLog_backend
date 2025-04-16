@@ -3,10 +3,7 @@ package be.restiau.interactivespeciesatlas_v3.dl.entities;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,8 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode @ToString
 @MappedSuperclass
-public class BaseEntity<T> {
+public abstract class BaseEntity<T> {
 
+
+//    @Setter // à décommenter uniquement pour les tests
     @Id
     @GeneratedValue
     private T id;
@@ -27,4 +26,5 @@ public class BaseEntity<T> {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 }
