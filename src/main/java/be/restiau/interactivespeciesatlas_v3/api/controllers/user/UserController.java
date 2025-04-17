@@ -5,6 +5,8 @@ import be.restiau.interactivespeciesatlas_v3.api.models.user.dto.UserDTO;
 import be.restiau.interactivespeciesatlas_v3.api.models.user.form.UserForm;
 import be.restiau.interactivespeciesatlas_v3.bll.services.user.UserService;
 import be.restiau.interactivespeciesatlas_v3.dl.entities.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +22,34 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * Récupère le profil de l'utilisateur connecté.
+     */
+    @Operation(
+            summary = "Obtenir le profil de l'utilisateur",
+            description = "Cette opération permet à un utilisateur connecté de récupérer son profil.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Profil récupéré avec succès"),
+                    @ApiResponse(responseCode = "401", description = "Non autorisé")
+            }
+    )
     @GetMapping
     public ResponseEntity<UserDTO> getProfile(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(userService.getById(user.getId()));
     }
 
+    /**
+     * Met à jour les informations du profil de l'utilisateur connecté.
+     */
+    @Operation(
+            summary = "Mettre à jour le profil de l'utilisateur",
+            description = "Permet à un utilisateur connecté de mettre à jour ses informations de profil.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Profil mis à jour avec succès"),
+                    @ApiResponse(responseCode = "400", description = "Données invalides"),
+                    @ApiResponse(responseCode = "401", description = "Non autorisé")
+            }
+    )
     @PutMapping
     public ResponseEntity<UserTokenDTO> update(
             @Valid @RequestBody UserForm userForm,

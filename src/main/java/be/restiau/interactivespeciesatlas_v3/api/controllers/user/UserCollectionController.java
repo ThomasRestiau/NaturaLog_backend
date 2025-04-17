@@ -4,6 +4,8 @@ import be.restiau.interactivespeciesatlas_v3.api.models.species.form.SpeciesSave
 import be.restiau.interactivespeciesatlas_v3.bll.services.species.SpeciesService;
 import be.restiau.interactivespeciesatlas_v3.dl.entities.Species;
 import be.restiau.interactivespeciesatlas_v3.dl.entities.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +24,16 @@ public class UserCollectionController {
     private final SpeciesService speciesService;
 
     /**
-     * Récupère la collection d'espèces de l'utilisateur connecté
+     * Récupère la collection d'espèces de l'utilisateur connecté.
      */
+    @Operation(
+            summary = "Récupérer la collection d'espèces de l'utilisateur",
+            description = "Cette opération permet à un utilisateur connecté de récupérer sa collection d'espèces sauvegardées.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Collection d'espèces récupérée avec succès"),
+                    @ApiResponse(responseCode = "401", description = "Non autorisé")
+            }
+    )
     @GetMapping
     public ResponseEntity<Set<Species>> getCollection(@AuthenticationPrincipal User user) {
         Set<Species> speciesSet = user.getSpeciesSet();
@@ -31,8 +41,16 @@ public class UserCollectionController {
     }
 
     /**
-     * Ajoute une espèce à la collection de l'utilisateur connecté
+     * Ajoute une espèce à la collection de l'utilisateur connecté.
      */
+    @Operation(
+            summary = "Ajouter une espèce à la collection de l'utilisateur",
+            description = "Permet à un utilisateur connecté d'ajouter une espèce à sa collection.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Espèce ajoutée à la collection"),
+                    @ApiResponse(responseCode = "400", description = "Données invalides")
+            }
+    )
     @PostMapping("/{userId}")
     public ResponseEntity<Void> addToCollection(@Valid @RequestBody SpeciesSaveForm form, @PathVariable Long userId) {
         speciesService.addSpeciesToCollection(userId, form);
@@ -40,8 +58,16 @@ public class UserCollectionController {
     }
 
     /**
-     * Supprime une espèce spécifique de la collection de l'utilisateur connecté
+     * Supprime une espèce spécifique de la collection de l'utilisateur connecté.
      */
+    @Operation(
+            summary = "Supprimer une espèce de la collection",
+            description = "Permet à un utilisateur connecté de supprimer une espèce de sa collection.",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Espèce supprimée avec succès"),
+                    @ApiResponse(responseCode = "404", description = "Espèce non trouvée")
+            }
+    )
     @DeleteMapping("/{speciesId}")
     public ResponseEntity<Void> removeFromCollection(@PathVariable Long speciesId, @AuthenticationPrincipal User user) {
         speciesService.removeSpeciesFromCollection(user, speciesId);
