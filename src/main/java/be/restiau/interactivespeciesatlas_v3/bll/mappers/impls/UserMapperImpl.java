@@ -25,7 +25,7 @@ public class UserMapperImpl implements UserMapper {
         return new UserShortDTO(
                 user.getId(),
                 user.getRole(),
-                String.format("%s %s", user.getFirstName(), user.getLastName())
+                user.getUsername()
         );
     }
 

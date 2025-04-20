@@ -29,9 +29,11 @@ public class OpenAIAdapterImpl implements OpenAIAdapter {
         String prompt = """
                 Tu es un naturaliste expert. Décris l'espèce suivante en 255 caractères max. 
                 Commence par le nom vernaculaire. Donne son habitat, alimentation, comportement social et une particularité.
+                Pour chaque élément (nom vernaculaire, habitat, alimentation, comportement social et particularité),
+                termine par deux sauts de ligne (\n\n).
                 
-                Espèce : %s (%s)
-                """.formatted(dto.vernacularName(), dto.scientificName());
+                Espèce : %s (%s)\n\n""".formatted(dto.vernacularName(), dto.scientificName());
+
 
         Map<String, Object> requestBody = Map.of(
                 "model", "gpt-3.5-turbo",
@@ -66,7 +68,8 @@ public class OpenAIAdapterImpl implements OpenAIAdapter {
                             .get("message")
                             .get("content")
                             .asText();
-                    String[] segments = description.split("\n\n");
+                    String[] segments = description.split("(?<=\\n\\n)(?=\\S)");
+
 
                     return new SpeciesDetailsEnriched(
                             dto.gbifId(),

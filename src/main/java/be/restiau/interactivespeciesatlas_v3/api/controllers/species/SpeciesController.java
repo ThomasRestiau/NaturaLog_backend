@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/species")
@@ -33,9 +34,9 @@ public class SpeciesController {
     )
     @GetMapping("/search")
     public ResponseEntity<List<SpeciesShortGbifDTO>> searchSpeciesByVernacularName(
-            @RequestParam String name
+            @RequestParam String vernacularName
     ) {
-        return ResponseEntity.ok(speciesService.searchByVernacularName(name));
+        return ResponseEntity.ok(speciesService.searchByVernacularName(vernacularName));
     }
 
     /**

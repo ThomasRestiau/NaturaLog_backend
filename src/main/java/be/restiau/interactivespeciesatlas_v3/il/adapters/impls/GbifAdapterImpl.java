@@ -44,6 +44,7 @@ public class GbifAdapterImpl implements GbifAdapter {
 
         List<SpeciesShortGbifDTO> results = new ArrayList<>();
         Set<String> seenScientificNames = new HashSet<>();
+        Set<String> seenVernacularNames = new HashSet<>();
 
         for (JsonNode node : response.get("results")) {
             String key = node.has("key") ? node.get("key").asText() : null;
@@ -66,8 +67,13 @@ public class GbifAdapterImpl implements GbifAdapter {
             String vernacularName = detailedResponse.has("vernacularName") ? detailedResponse.get("vernacularName").asText() : null;
             String canonicalName = detailedResponse.has("canonicalName") ? detailedResponse.get("canonicalName").asText() : null;
 
+            if(seenVernacularNames.contains(vernacularName)){
+                continue;
+            }
+
             results.add(new SpeciesShortGbifDTO(key, scientificName, vernacularName, canonicalName));
             seenScientificNames.add(scientificName);
+            seenVernacularNames.add(vernacularName);
         }
 
         return results;
@@ -117,6 +123,7 @@ public class GbifAdapterImpl implements GbifAdapter {
                                 List<SpeciesCoordDTO> coords = new ArrayList<>();
 
 
+                                assert results != null;
                                 results.forEach(result -> {
                                     String lat = result.get("decimalLatitude").asText();
                                     String lng = result.get("decimalLongitude").asText();

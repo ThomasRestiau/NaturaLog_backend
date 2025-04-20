@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/me/collection")
