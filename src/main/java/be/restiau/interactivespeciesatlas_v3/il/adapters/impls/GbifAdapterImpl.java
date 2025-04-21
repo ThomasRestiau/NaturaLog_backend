@@ -105,7 +105,7 @@ public class GbifAdapterImpl implements GbifAdapter {
                                     .path("/occurrence/search")
                                     .queryParam("scientificName", scientificName)
                                     .queryParam("hasCoordinate", true)
-                                    .queryParam("limit", 100)
+                                    .queryParam("limit", 300)
                                     .build())
                             .retrieve()
                             .bodyToMono(JsonNode.class)
