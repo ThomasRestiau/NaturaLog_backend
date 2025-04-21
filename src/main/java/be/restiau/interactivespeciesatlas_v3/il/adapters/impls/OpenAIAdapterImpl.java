@@ -25,12 +25,12 @@ public class OpenAIAdapterImpl implements OpenAIAdapter {
     @Cacheable("description")
     public Mono<List<String>> getDescription(String scientificName, String vernacularName) {
         String prompt = """
-                Tu es un naturaliste expert. Décris l'espèce suivante en 255 caractères max. 
+                Tu es un naturaliste expert. Décris l'espèce suivante en 255 caractères max.
                 Commence par le nom vernaculaire. Donne son habitat, alimentation, comportement social et une particularité.
                 Pour chaque élément (nom vernaculaire, habitat, alimentation, comportement social et particularité),
                 termine par deux sauts de ligne (\n\n).
                 
-                Espèce : %s (%s)\n\n""".formatted(vernacularName, scientificName);
+                Espèce : %s (%s)""".formatted(vernacularName, scientificName);
 
 
         Map<String, Object> requestBody = Map.of(
@@ -72,6 +72,48 @@ public class OpenAIAdapterImpl implements OpenAIAdapter {
                 .onErrorResume(error -> {
                     log.error("Erreur lors de l'appel à OpenAI : {}", error.getMessage());
                     return Mono.just(List.of("Description non disponible pour le moment."));
+                });
+    }
+
+    @Override
+    public Mono<String> getResponse(String userMessage) {
+
+        String prompt = """
+                Tu es un assistant naturaliste expert dans les espèces animales et végétales du monde entier.
+                Tes réponses doivent être simples, pédagogiques et adaptées à un public curieux.
+                Lorsque l'utilisateur pose une question, donne une réponse claire, factuelle et si possible avec des anecdotes intéressantes ou des faits insolites.
+                Si tu ne connais pas la réponse, propose une piste de recherche.
+                Reste toujours bienveillant et encourageant.
+                Si une question sort de ce contexte, tu réponds : "Je suis un chatbot Naturaliste, je ne réponds qu'aux questions sur la nature."
+                La réponse est de maximum 200 caractères.
+                Voici la question de l'utilisateur : %s
+                """.formatted(userMessage);
+
+        Map<String, Object> requestBody = Map.of(
+                "model", "gpt-3.5-turbo",
+                "messages", List.of(
+                        Map.of("role", "system", "content", "Tu es un naturaliste expert."),
+                        Map.of("role", "user", "content", prompt)
+                ),
+                "max_tokens", 200,
+                "temperature", 0.7
+        );
+
+        return openAiWebClient.post()
+                .uri("/chat/completions")
+                .bodyValue(requestBody)
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .map(json -> {
+                        return json.get("choices")
+                                .get(0)
+                                .get("message")
+                                .get("content")
+                                .asText();
+                })
+                .onErrorResume(error -> {
+                    log.error("Erreur dans getResponse : {}", error.getMessage());
+                    return Mono.just("Je n’ai pas pu répondre pour le moment. N'hésite pas à réessayer !");
                 });
     }
 }
