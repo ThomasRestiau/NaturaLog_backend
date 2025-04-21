@@ -14,4 +14,7 @@ public interface UserService  {
     User getByUsername(String username);
     User createUser(User user);
     UserTokenDTO updateUser(Long id, UserForm userForm);
-    void deleteById(Long id);}
+    void deleteById(Long id);
+
+
+}

@@ -1,7 +1,5 @@
 package be.restiau.interactivespeciesatlas_v3.il.adapters.impls;
 
-import be.restiau.interactivespeciesatlas_v3.bll.models.dto.SpeciesDetailsEnriched;
-import be.restiau.interactivespeciesatlas_v3.bll.models.dto.SpeciesDetailsGbifDTO;
 import be.restiau.interactivespeciesatlas_v3.il.adapters.OpenAIAdapter;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +23,14 @@ public class OpenAIAdapterImpl implements OpenAIAdapter {
     private final WebClient openAiWebClient;
 
     @Cacheable("description")
-    public Mono<SpeciesDetailsEnriched> getSpeciesDetailsEnriched(SpeciesDetailsGbifDTO dto) {
+    public Mono<List<String>> getDescription(String scientificName, String vernacularName) {
         String prompt = """
                 Tu es un naturaliste expert. Décris l'espèce suivante en 255 caractères max. 
                 Commence par le nom vernaculaire. Donne son habitat, alimentation, comportement social et une particularité.
                 Pour chaque élément (nom vernaculaire, habitat, alimentation, comportement social et particularité),
                 termine par deux sauts de ligne (\n\n).
                 
-                Espèce : %s (%s)\n\n""".formatted(dto.vernacularName(), dto.scientificName());
+                Espèce : %s (%s)\n\n""".formatted(vernacularName, scientificName);
 
 
         Map<String, Object> requestBody = Map.of(
@@ -69,45 +67,11 @@ public class OpenAIAdapterImpl implements OpenAIAdapter {
                             .get("content")
                             .asText();
                     String[] segments = description.split("(?<=\\n\\n)(?=\\S)");
-
-
-                    return new SpeciesDetailsEnriched(
-                            dto.gbifId(),
-                            dto.scientificName(),
-                            dto.vernacularName(),
-                            dto.canonicalName(),
-                            dto.kingdom(),
-                            dto.phylum(),
-                            dto.order(),
-                            dto.family(),
-                            dto.genus(),
-                            dto.species(),
-                            dto.imageUrl(),
-                            List.of(segments),
-                            dto.coords()
-                    );
+                    return List.of(segments);
                 })
                 .onErrorResume(error -> {
                     log.error("Erreur lors de l'appel à OpenAI : {}", error.getMessage());
-
-                    // fallback avec une description générique
-                    String fallbackDescription = "Description non disponible pour le moment.";
-
-                    return Mono.just(new SpeciesDetailsEnriched(
-                            dto.gbifId(),
-                            dto.scientificName(),
-                            dto.vernacularName(),
-                            dto.canonicalName(),
-                            dto.kingdom(),
-                            dto.phylum(),
-                            dto.order(),
-                            dto.family(),
-                            dto.genus(),
-                            dto.species(),
-                            dto.imageUrl(),
-                            List.of(fallbackDescription),
-                            dto.coords()
-                    ));
+                    return Mono.just(List.of("Description non disponible pour le moment."));
                 });
     }
 }

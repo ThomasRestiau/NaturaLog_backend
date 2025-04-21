@@ -4,6 +4,7 @@ import be.restiau.interactivespeciesatlas_v3.api.models.security.dtos.UserShortD
 import be.restiau.interactivespeciesatlas_v3.api.models.security.dtos.UserTokenDTO;
 import be.restiau.interactivespeciesatlas_v3.api.models.security.forms.RegisterForm;
 import be.restiau.interactivespeciesatlas_v3.api.models.user.dto.UserDTO;
+import be.restiau.interactivespeciesatlas_v3.bll.exceptions.user.BirthDateAfterNowException;
 import be.restiau.interactivespeciesatlas_v3.bll.exceptions.user.EmailAlreadyExistsException;
 import be.restiau.interactivespeciesatlas_v3.bll.exceptions.user.UsernameAlreadyExistsException;
 import be.restiau.interactivespeciesatlas_v3.bll.mappers.UserMapper;
@@ -19,6 +20,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +39,9 @@ public class AuthServiceImpl implements AuthService {
         }
         if(userRepository.existsByEmail(registerForm.email())) {
             throw new EmailAlreadyExistsException(HttpStatus.CONFLICT, "Email already exists");
+        }
+        if(registerForm.birthDate().isAfter(LocalDate.now()) || registerForm.birthDate().isEqual(LocalDate.now())) {
+            throw new BirthDateAfterNowException(HttpStatus.CONFLICT, "Birthdate must be before today");
         }
         User newUser = userMapper.registerFormToUser(registerForm);
         newUser.setPassword(passwordEncoder.encode(registerForm.password()));

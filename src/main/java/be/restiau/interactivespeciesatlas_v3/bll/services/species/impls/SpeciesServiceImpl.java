@@ -10,7 +10,6 @@ import be.restiau.interactivespeciesatlas_v3.dal.repositories.UserRepository;
 import be.restiau.interactivespeciesatlas_v3.dl.entities.Species;
 import be.restiau.interactivespeciesatlas_v3.dl.entities.User;
 import be.restiau.interactivespeciesatlas_v3.il.adapters.GbifAdapter;
-import be.restiau.interactivespeciesatlas_v3.il.adapters.LlmAdapter;
 import be.restiau.interactivespeciesatlas_v3.il.adapters.OpenAIAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -74,6 +73,25 @@ public class SpeciesServiceImpl implements SpeciesService {
     @Override
     public Mono<SpeciesDetailsEnriched> getSpeciesDetails(String key) {
         return gbifAdapter.getSpeciesDetailsGbifDTO(key)
-                .flatMap(openAIAdapter::getSpeciesDetailsEnriched);
+                .flatMap(dto ->
+                        openAIAdapter.getDescription(dto.scientificName(), dto.vernacularName())
+                                .map(description ->
+                                        new SpeciesDetailsEnriched(
+                                                dto.gbifId(),
+                                                dto.scientificName(),
+                                                dto.vernacularName(),
+                                                dto.canonicalName(),
+                                                dto.kingdom(),
+                                                dto.phylum(),
+                                                dto.order(),
+                                                dto.family(),
+                                                dto.genus(),
+                                                dto.species(),
+                                                dto.imageUrl(),
+                                                description,
+                                                dto.coords()
+                                        )
+                                )
+                );
     }
 }

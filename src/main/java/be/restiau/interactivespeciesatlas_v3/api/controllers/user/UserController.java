@@ -52,7 +52,7 @@ public class UserController {
             }
     )
     @PutMapping
-    public ResponseEntity<UserTokenDTO> update(
+    public ResponseEntity<UserTokenDTO> updateProfile(
             @Valid @RequestBody UserForm userForm,
             @AuthenticationPrincipal User user
     ) {
