@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +22,6 @@ public class SpeciesController {
     /**
      * Recherche des espèces par leur nom vernaculaire.
      */
-    @PreAuthorize("isAnonymous()")
     @Operation(
             summary = "Recherche des espèces par leur nom vernaculaire",
             description = "Permet de rechercher des espèces en fonction de leur nom vernaculaire.",
@@ -42,7 +40,6 @@ public class SpeciesController {
     /**
      * Récupération des détails d'une espèce.
      */
-    @PreAuthorize("isAnonymous()")
     @Operation(
             summary = "Récupérer les détails d'une espèce",
             description = "Permet d'obtenir des informations détaillées sur une espèce en fonction de sa clé.",

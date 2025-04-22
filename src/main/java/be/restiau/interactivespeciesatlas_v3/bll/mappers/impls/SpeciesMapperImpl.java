@@ -13,8 +13,8 @@ public class SpeciesMapperImpl implements SpeciesMapper {
         return new Species(
                 speciesForm.gbifId(),
                 speciesForm.scientificName(),
-                speciesForm.commonName(),
-                speciesForm.userNotes()
+                speciesForm.vernacularName(),
+                speciesForm.canonicalName()
         );
     }
 

@@ -5,12 +5,11 @@ import jakarta.validation.constraints.Size;
 
 public record SpeciesSaveForm(
         @NotBlank
+        String gbifId,
+        @NotBlank
         String scientificName,
         @NotBlank
-        String commonName,
-        @NotBlank
-        String gbifId,
-        @Size(max = 3000)
-        String userNotes
+        String vernacularName,
+        String canonicalName
 ) {
 }

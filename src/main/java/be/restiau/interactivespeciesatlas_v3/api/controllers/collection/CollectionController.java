@@ -1,5 +1,6 @@
-package be.restiau.interactivespeciesatlas_v3.api.controllers.user;
+package be.restiau.interactivespeciesatlas_v3.api.controllers.collection;
 
+import be.restiau.interactivespeciesatlas_v3.api.models.species.dto.SpeciesDTO;
 import be.restiau.interactivespeciesatlas_v3.api.models.species.form.SpeciesSaveForm;
 import be.restiau.interactivespeciesatlas_v3.bll.services.species.SpeciesService;
 import be.restiau.interactivespeciesatlas_v3.dl.entities.Species;
@@ -14,13 +15,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/me/collection")
 @PreAuthorize("isAuthenticated()")
-public class UserCollectionController {
+public class CollectionController {
 
     private final SpeciesService speciesService;
 
@@ -36,8 +38,10 @@ public class UserCollectionController {
             }
     )
     @GetMapping
-    public ResponseEntity<Set<Species>> getCollection(@AuthenticationPrincipal User user) {
-        Set<Species> speciesSet = user.getSpeciesSet();
+    public ResponseEntity<Set<SpeciesDTO>> getCollection(@AuthenticationPrincipal User user) {
+        Set<SpeciesDTO> speciesSet = user.getSpeciesSet().stream()
+                .map(SpeciesDTO::fromSpecies)
+                .collect(Collectors.toUnmodifiableSet());
         return ResponseEntity.ok(speciesSet);
     }
 
