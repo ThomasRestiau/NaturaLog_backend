@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
@@ -32,7 +33,7 @@ public class AdminController {
     }
 
     @Operation(summary = "Suppression d'un compte (ADMIN)")
-    @DeleteMapping("/{userId}/delete")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUserById(
             @PathVariable Long userId){
         userService.deleteById(userId);
