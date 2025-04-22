@@ -26,14 +26,13 @@ public class SecurityConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(r -> r.anyRequest().permitAll());
         return http.build();
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/*")  // Permet les requêtes vers toutes les routes
+        registry.addMapping("/**")  // Permet les requêtes vers toutes les routes
                 .allowedOrigins("http://localhost:4200")  // Autorise uniquement Angular
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
