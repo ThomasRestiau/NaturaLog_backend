@@ -2,16 +2,20 @@ package be.restiau.interactivespeciesatlas_v3.api.controllers.collection;
 
 import be.restiau.interactivespeciesatlas_v3.api.models.species.dto.SpeciesDTO;
 import be.restiau.interactivespeciesatlas_v3.api.models.species.form.SpeciesSaveForm;
+import be.restiau.interactivespeciesatlas_v3.bll.models.dto.SpeciesDetailsEnriched;
 import be.restiau.interactivespeciesatlas_v3.bll.services.species.SpeciesService;
 import be.restiau.interactivespeciesatlas_v3.dl.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,11 +41,18 @@ public class CollectionController {
             }
     )
     @GetMapping
-    public ResponseEntity<Set<SpeciesDTO>> getCollection(@AuthenticationPrincipal User user) {
+    public Mono<ResponseEntity<Set<SpeciesDetailsEnriched>>> getCollection(@AuthenticationPrincipal User user) {
+
         Set<SpeciesDTO> speciesSet = user.getSpeciesSet().stream()
                 .map(SpeciesDTO::fromSpecies)
                 .collect(Collectors.toUnmodifiableSet());
-        return ResponseEntity.ok(speciesSet);
+
+        Flux<SpeciesDetailsEnriched> speciesDetailsFlux = Flux.fromIterable(speciesSet)
+                .flatMap(dto -> speciesService.getSpeciesDetails(dto.gbifId()));
+
+        return speciesDetailsFlux.collect(Collectors.toSet())
+                .map(ResponseEntity::ok)
+                .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()));
     }
 
     /**
@@ -72,9 +83,9 @@ public class CollectionController {
                     @ApiResponse(responseCode = "404", description = "Espèce non trouvée")
             }
     )
-    @DeleteMapping("/{speciesId}")
-    public ResponseEntity<Void> removeFromCollection(@PathVariable Long speciesId, @AuthenticationPrincipal User user) {
-        speciesService.removeSpeciesFromCollection(user, speciesId);
+    @DeleteMapping("/{gbifId}")
+    public ResponseEntity<Void> removeFromCollection(@PathVariable String gbifId, @AuthenticationPrincipal User user) {
+        speciesService.removeSpeciesFromCollection(user, gbifId);
         return ResponseEntity.noContent().build();
     }
 }

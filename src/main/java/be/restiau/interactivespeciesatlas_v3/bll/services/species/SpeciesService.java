@@ -11,7 +11,7 @@ import java.util.List;
 public interface SpeciesService {
 
     void addSpeciesToCollection(Long userId, SpeciesSaveForm species);
-    void removeSpeciesFromCollection(User user, Long speciesId);
+    void removeSpeciesFromCollection(User user, String gbiId);
     List<SpeciesShortGbifDTO> searchByVernacularName(String name);
     Mono<SpeciesDetailsEnriched> getSpeciesDetails(String key) ;
 }

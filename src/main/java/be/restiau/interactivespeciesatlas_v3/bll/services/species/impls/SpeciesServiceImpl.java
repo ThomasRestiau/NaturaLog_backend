@@ -49,8 +49,8 @@ public class SpeciesServiceImpl implements SpeciesService {
     }
 
     @Override
-    public void removeSpeciesFromCollection(User user, Long speciesId) {
-        Species species = speciesRepository.findById(speciesId).orElseThrow(
+    public void removeSpeciesFromCollection(User user, String gbifId) {
+        Species species = speciesRepository.findByGbifId(gbifId).orElseThrow(
                 () -> new IllegalArgumentException("Species id not found")
         );
 
