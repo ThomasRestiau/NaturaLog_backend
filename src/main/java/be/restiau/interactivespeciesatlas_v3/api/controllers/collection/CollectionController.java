@@ -3,7 +3,6 @@ package be.restiau.interactivespeciesatlas_v3.api.controllers.collection;
 import be.restiau.interactivespeciesatlas_v3.api.models.species.dto.SpeciesDTO;
 import be.restiau.interactivespeciesatlas_v3.api.models.species.form.SpeciesSaveForm;
 import be.restiau.interactivespeciesatlas_v3.bll.services.species.SpeciesService;
-import be.restiau.interactivespeciesatlas_v3.dl.entities.Species;
 import be.restiau.interactivespeciesatlas_v3.dl.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
