@@ -18,6 +18,5 @@ public record SpeciesDetailsEnriched(
         String imageUrl,
         List<String> description,
         List<SpeciesCoordDTO> coords
-
 ) {
 }

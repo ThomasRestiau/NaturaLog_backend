@@ -2,9 +2,9 @@ spring:
   application:
     name: InteractiveSpeciesAtlas_v3
   datasource:
-    url: jdbc:postgresql://localhost:5432/interactive_species_atlas_api_db
-    username: postgres
-    password: Test1234=
+    url: jdbc:postgresql://localhost:5432/interactive_species_atlas_api_db # ${SPRING_DATASOURCE_URL}
+    username: postgres # ${SPRING_DATASOURCE_USERNAME}
+    password: Test1234= # ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

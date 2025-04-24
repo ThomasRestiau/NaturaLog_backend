@@ -9,6 +9,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,8 +45,20 @@ public class CollectionController {
             }
     )
     @GetMapping
-    public Mono<ResponseEntity<Set<SpeciesDetailsEnriched>>> getCollection(@AuthenticationPrincipal User user) {
-
+    public Mono<ResponseEntity<Page<SpeciesDetailsEnriched>>> getCollection(
+            @AuthenticationPrincipal User user,
+            @RequestParam(required = false) String scientificName,
+            @RequestParam(required = false) String vernacularName,
+            @RequestParam(required = false) String kingdom,
+            @RequestParam(required = false) String phylum,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) String family,
+            @RequestParam(required = false) String genus,
+            @RequestParam(required = false) String species,
+            @RequestParam(required = false) String country,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
         Set<SpeciesDTO> speciesSet = user.getSpeciesSet().stream()
                 .map(SpeciesDTO::fromSpecies)
                 .collect(Collectors.toUnmodifiableSet());
@@ -50,10 +66,37 @@ public class CollectionController {
         Flux<SpeciesDetailsEnriched> speciesDetailsFlux = Flux.fromIterable(speciesSet)
                 .flatMap(dto -> speciesService.getSpeciesDetails(dto.gbifId()));
 
-        return speciesDetailsFlux.collect(Collectors.toSet())
-                .map(ResponseEntity::ok)
+        return speciesDetailsFlux
+                .filter(s -> {
+                    boolean matchesText = (scientificName == null || (s.scientificName() != null &&
+                            s.scientificName().toLowerCase().contains(scientificName.toLowerCase())))
+                            && (vernacularName == null || (s.vernacularName() != null &&
+                            s.vernacularName().toLowerCase().contains(vernacularName.toLowerCase())));
+
+                    boolean matchesTaxonomy = (kingdom == null || kingdom.equalsIgnoreCase(s.kingdom()))
+                            && (phylum == null || phylum.equalsIgnoreCase(s.phylum()))
+                            && (order == null || order.equalsIgnoreCase(s.order()))
+                            && (family == null || family.equalsIgnoreCase(s.family()))
+                            && (genus == null || genus.equalsIgnoreCase(s.genus()))
+                            && (species == null || species.equalsIgnoreCase(s.species()));
+
+                    boolean matchesCountry = (country == null || s.coords() != null &&
+                            s.coords().stream().anyMatch(coord -> country.equalsIgnoreCase(coord.country())));
+
+                    return matchesText && matchesTaxonomy && matchesCountry;
+                })
+                .collectList()
+                .map(list -> {
+                    int total = list.size();
+                    int start = Math.min(page * size, total);
+                    int end = Math.min(start + size, total);
+                    List<SpeciesDetailsEnriched> content = list.subList(start, end);
+                    Page<SpeciesDetailsEnriched> pageResult = new PageImpl<>(content, PageRequest.of(page, size), total);
+                    return ResponseEntity.ok(pageResult);
+                })
                 .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()));
     }
+
 
     /**
      * Ajoute une espèce à la collection de l'utilisateur connecté.
