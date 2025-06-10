@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>be.restiau</groupId>
-    <artifactId>InteractiveSpeciesAtlas_v3</artifactId>
+    <artifactId>InteractiveAtlasSpecies_v3</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>InteractiveSpeciesAtlas_v3</name>
-    <description>InteractiveSpeciesAtlas_v3</description>
+    <name>InteractiveAtlasSpecies_v3</name>
+    <description>InteractiveAtlasSpecies_v3</description>
     <url/>
     <licenses>
         <license/>
