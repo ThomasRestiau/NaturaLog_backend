@@ -66,7 +66,7 @@ class AuthServiceImplTest {
 //        savedUser.setId(1L); // Décommenter le @Setter dans dl/entities/BaseEntity
         savedUser.setRole(UserRole.USER);
 
-        userDTO = new UserDTO("jdoe", "John", "Doe", "jdoe@email.com", LocalDate.of(1990, 1, 1));
+        userDTO = new UserDTO(1L, "JohnDoe", "John","Doe", "jdoe@email.com", LocalDate.of(1990, 1, 1));
     }
 
     // ---------- TESTS REGISTER ----------
@@ -129,7 +129,6 @@ class AuthServiceImplTest {
 
         assertNotNull(result);
         assertEquals("token123", result.token());
-        assertEquals("John Doe", result.user().fullName());
     }
 
     @Test
