@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>be.restiau</groupId>
-    <artifactId>InteractiveAtlasSpecies_v3</artifactId>
+    <artifactId>NaturaLog_backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>InteractiveAtlasSpecies_v3</name>
-    <description>InteractiveAtlasSpecies_v3</description>
+    <name>NaturaLog_backend</name>
+    <description>NaturaLog_backend</description>
     <url/>
     <licenses>
         <license/>
@@ -141,6 +141,18 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.4.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

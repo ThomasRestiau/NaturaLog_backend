@@ -1,10 +1,10 @@
 spring:
   application:
-    name: InteractiveSpeciesAtlas_v3
+    name: NaturaLog_backend
   datasource:
-    url: jdbc:postgresql://localhost:5432/interactive_atlas_species_api_db # ${SPRING_DATASOURCE_URL}
-    username: postgres # ${SPRING_DATASOURCE_USERNAME}
-    password: Test1234= # ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -26,5 +26,5 @@ server:
 
 openai:
   api:
-    key: "your key"
+    key: ${OPEN_API_KEY}
 
